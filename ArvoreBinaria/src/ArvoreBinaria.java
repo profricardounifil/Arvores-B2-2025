@@ -18,43 +18,45 @@ public class ArvoreBinaria {
         if(estaVazia()) {
             raiz = novoNo;
         } else {
-            if(raiz.getConteudo() > novoNo.getConteudo()) {
-                //verificar filho a esquerda
-                if(raiz.getEsquerda() == null) {
-                    //verificando se tem filho a esquerda
-                    raiz.setEsquerda(novoNo);
-                }
-            } else {
-                if(raiz.getDireita() == null) {
-                    //verificando se tem filho a direita
-                    raiz.setDireita(novoNo);
-                } else {
-                    No aux = raiz;
-                    aux = aux.getDireita();
-                    if(aux.getConteudo() < novoNo.getConteudo()) {
-                        //setar esquerda
+            No aux = this.raiz;
+            while(true) {
+                if(novoNo.getConteudo() > aux.getConteudo()) {
+                    if(aux.getDireita() == null) {
+                        aux.setDireita(novoNo);
+                        return;
                     } else {
-                        //setar direita
-
+                        aux = aux.getDireita();
+                    }
+                } else {
+                    if(aux.getEsquerda() == null) {
+                        aux.setEsquerda(novoNo);
+                        return;
+                    } else {
+                        aux = aux.getEsquerda();
                     }
                 }
-                //verificar filho a direita
+
             }
         }
     }
 
-    public void inserirRecRedir(int conteudo) {
+    public void inserirRecursivoRedirecionamentoOtimizado(int conteudo) {
         No novoNo = new No(conteudo);
-        No aux = this.raiz;
-        inserirRecursivo(novoNo, aux);
+        this.raiz = inserirRecursivoOtimizado(this.raiz, novoNo);
     }
 
-    public void inserirRecursivo(No novoNo, No aux) {
+    private No inserirRecursivoOtimizado(No aux, No novoNo) {
         if(aux == null) {
-            this.raiz = novoNo;
+            return novoNo;
+        } else if (novoNo.getConteudo() > aux.getConteudo()) {
+            aux.setDireita(inserirRecursivoOtimizado(aux.getDireita(), novoNo));
+        } else {
+            aux.setEsquerda(inserirRecursivoOtimizado(aux.getEsquerda(), novoNo));
         }
-        inserirRecursivo(novoNo, aux);
+
+        return aux;
     }
+
     public void visualizar() {
         //preOrdem(this.raiz);
         //posOrdem(this.raiz);
@@ -86,6 +88,34 @@ public class ArvoreBinaria {
         posOrdem(no.getEsquerda());
         posOrdem(no.getDireita());
         System.out.println(no.getConteudo());
+    }
+
+    public void inserirRecursivoRedirecionamento2(int conteudo) {
+        No novoNo = new No(conteudo);
+        inserirRecursivo2(this.raiz, novoNo);
+    }
+
+    private void inserirRecursivo2(No aux, No novoNo) {
+        if(estaVazia()) {
+            this.raiz = novoNo;
+            return;
+        }
+        if(novoNo.getConteudo() > aux.getConteudo()) {
+            if(aux.getDireita() == null) {
+                aux.setDireita(novoNo);
+                return;
+            } else {
+                aux = aux.getDireita();
+            }
+        } else {
+            if(aux.getEsquerda() == null) {
+                aux.setEsquerda(novoNo);
+                return;
+            } else {
+                aux = aux.getEsquerda();
+            }
+        }
+        inserirRecursivo2(aux, novoNo);
     }
 
 }
